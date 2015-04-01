@@ -1,0 +1,22 @@
+---
+- hosts: servers
+  serial: 1
+  handlers:
+    - name: reboot the server
+      command: shutdown -r now
+      async: 0
+      poll: 0
+      ignore_errors: true
+
+  tasks:
+    - name: upgrade kernel
+      yum: name=kernel state=latest
+      notify: reboot the server
+      tags:
+        - kernel
+
+    - name: upgrade packages
+      yum: name=* state=latest
+      tags:
+        - packages
+
